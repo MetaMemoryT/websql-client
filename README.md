@@ -1,11 +1,13 @@
 WebSQL Server
 =============
 
-[websql-server](https://github.com/MetaMemoryT/websql-server) exposes the
-WebSQL API through Websockets.
+[websql-server](https://github.com/MetaMemoryT/websql-server) exposes a sqlite
+API originally defined at
+[Cordova-SQLitePlugin](https://github.com/brodysoft/Cordova-SQLitePlugin)
+through Websockets.
 
-[websql-client](https://github.com/MetaMemoryT/websql-client) connects to a
-WebSQL API through Websockets.
+[websql-client](https://github.com/MetaMemoryT/websql-client) connects to [websql-server](https://github.com/MetaMemoryT/websql-server)
+and exposes a WebSQL API.
 
 Usage
 ======
