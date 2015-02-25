@@ -7,7 +7,7 @@
   document.addEventListener("DOMContentLoaded", doAllTests);
 
   function doAllTests() {
-    QUnit.config.testTimeout = 2000; // 25000; // 25 sec.
+    QUnit.config.testTimeout = 6000; // 25000; // 25 sec.
 
     QUnit.done(function(details) {
       console.log("Total: ", details.total,

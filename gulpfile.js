@@ -5,7 +5,7 @@ var coffee = require('gulp-coffee');
 gulp.task('default', ['compile']);
 
 gulp.task('compile', function() {
-  gulp.src('./websql-client.litcoffee')
+  gulp.src('./src/websql-client.litcoffee')
     .pipe(coffee({
       bare: true
     }).on('error', gutil.log))

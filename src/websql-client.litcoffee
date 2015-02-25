@@ -94,7 +94,8 @@ https://github.com/brodysoft/Cordova-SQLitePlugin/blob/master/SQLitePlugin.coffe
         error('database not open')
         return
       @addTransaction new
-        SQLitePluginTransaction(this, fn, error, success, true, false)
+        SQLitePluginTransaction(this, fn, error, success,
+            true, false, @primusConnector)
       return
 
     SQLitePlugin::readTransaction = (fn, error, success) ->
@@ -102,7 +103,8 @@ https://github.com/brodysoft/Cordova-SQLitePlugin/blob/master/SQLitePlugin.coffe
         error('database not open')
         return
       @addTransaction new
-        SQLitePluginTransaction(this, fn, error, success, true, true)
+        SQLitePluginTransaction(this, fn, error, success,
+          true, true, @primusConnector)
       return
 
     SQLitePlugin::startNextTransaction = ->
@@ -154,7 +156,7 @@ https://github.com/brodysoft/Cordova-SQLitePlugin/blob/master/SQLitePlugin.coffe
         return
 
       @addTransaction new SQLitePluginTransaction(this, myfn, null, null,
-         false, false)
+         false, false, @primusConnector)
       return
 
 ## SQLitePluginTransaction object for batching:
@@ -381,9 +383,10 @@ https://github.com/brodysoft/Cordova-SQLitePlugin/blob/master/SQLitePlugin.coffe
 
     class PrimusConnector
       constructor: ->
-        @primus = Primus.connect('http://localhost:8080')
+        @primus = Primus.connect('http://localhost:8082')
         @id = 0 # command id
         @cblist = []
+        @primus.on('data', @onData)
 
       onData: (data) ->
         switch data.command
