@@ -4,10 +4,10 @@
 
   var DEFAULT_SIZE = 5000000; // max to avoid popup in safari/ios
 
-  document.addEventListener("deviceready", doAllTests, false);
+  document.addEventListener("DOMContentLoaded", doAllTests);
 
   function doAllTests() {
-    QUnit.config.testTimeout = 25000; // 25 sec.
+    QUnit.config.testTimeout = 2000; // 25000; // 25 sec.
 
     QUnit.done(function(details) {
       console.log("Total: ", details.total,

@@ -1,3 +1,4 @@
 * DONE gulp
-* TODO tests
+* TODO run tests in browser
+* TODO run tests from node only, node-qunit with websocket client??
 * TODO minification

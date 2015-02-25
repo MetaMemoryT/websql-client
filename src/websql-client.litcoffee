@@ -46,7 +46,7 @@ https://github.com/brodysoft/Cordova-SQLitePlugin/blob/master/SQLitePlugin.coffe
 
 #### SQLitePlugin object
 
-    SQLitePlugin = (openargs, openSuccess, openError) ->
+    SQLitePlugin = (openargs, openSuccess, openError, primusConnector) ->
       console.log "SQLitePlugin openargs: #{JSON.stringify openargs}"
 
       if !(openargs and openargs['name'])
@@ -55,6 +55,7 @@ https://github.com/brodysoft/Cordova-SQLitePlugin/blob/master/SQLitePlugin.coffe
 
       dbname = openargs.name
 
+      @primusConnector = primusConnector
       @openargs = openargs
       @dbname = dbname
 
@@ -119,7 +120,7 @@ https://github.com/brodysoft/Cordova-SQLitePlugin/blob/master/SQLitePlugin.coffe
       onSuccess = () => success this
       unless @dbname of @openDBs
         @openDBs[@dbname] = true
-        cordova.exec onSuccess, error, "SQLitePlugin", "open", [ @openargs ]
+        @primusConnector.open onSuccess, error, [ @openargs ]
       else
         ###
         for a re-open run onSuccess async so that the openDatabase return value
@@ -140,8 +141,7 @@ https://github.com/brodysoft/Cordova-SQLitePlugin/blob/master/SQLitePlugin.coffe
 
         delete @openDBs[@dbname]
 
-        cordova.exec success, error, "SQLitePlugin", "close",
-          [ { path: @dbname } ]
+        @primusConnector.close success, error, [ { path: @dbname } ]
 
       return
 
@@ -162,7 +162,8 @@ https://github.com/brodysoft/Cordova-SQLitePlugin/blob/master/SQLitePlugin.coffe
     ###
     Transaction batching object:
     ###
-    SQLitePluginTransaction = (db, fn, error, success, txlock, readOnly) ->
+    SQLitePluginTransaction = (db, fn, error, success,
+                              txlock, readOnly, primusConnector) ->
       if typeof(fn) != "function"
         ###
         This is consistent with the implementation in Chrome -- it
@@ -172,6 +173,7 @@ https://github.com/brodysoft/Cordova-SQLitePlugin/blob/master/SQLitePlugin.coffe
         ###
         throw new Error("transaction expected a function")
 
+      @primusConnector = primusConnector
       @db = db
       @fn = fn
       @error = error
@@ -316,9 +318,8 @@ https://github.com/brodysoft/Cordova-SQLitePlugin/blob/master/SQLitePlugin.coffe
 
         return
 
-      cordova.exec mycb, null, "SQLitePlugin",
-        "backgroundExecuteSqlBatch",
-        [{dbargs: {dbname: @db.dbname}, executes: tropts}]
+      @primusConnector.backgroundExecuteSqlBatch mycb,
+        null, [{dbargs: {dbname: @db.dbname}, executes: tropts}]
 
       return
 
@@ -376,11 +377,78 @@ https://github.com/brodysoft/Cordova-SQLitePlugin/blob/master/SQLitePlugin.coffe
 
       return
 
+## PrimusConnector class
+
+    class PrimusConnector
+      constructor: ->
+        @primus = Primus.connect('http://localhost:8080')
+        @id = 0 # command id
+        @cblist = []
+
+      onData: (data) ->
+        switch data.command
+          when 'openComplete'
+            if data.err
+              @cblist[data.id].e(data.err, data.databaseID)
+            else
+              @cblist[data.id].s(data.err, data.databaseID)
+            delete cblist[data.id]
+          when 'backgroundExecuteSqlBatchFailed'
+            @cblist[data.id].e(data.err, data.databaseID)
+          when 'backgroundExecuteSqlBatchComplete'
+            @cblist[data.id].s(data.answer)
+
+      open: (onSuccess, onError, args) ->
+        @cblist[@id] = {
+          s: onSuccess,
+          e: onError
+        }
+        @primus.write({
+          command: 'open',
+          args: args,
+          id: @id++
+        })
+
+      close: (onSuccess, onError, args) ->
+        @cblist[@id] = {
+          s: onSuccess,
+          e: onError
+        }
+        @primus.write({
+          command: 'close',
+          path: args[0].path,
+          args: args,
+          id: @id++
+        })
+
+      delete: (onSuccess, onError, args) ->
+        @cblist[@id] = {
+          s: onSuccess,
+          e: onError
+        }
+        @primus.write({
+          command: 'delete',
+          args: args,
+          id: @id++
+        })
+
+      backgroundExecuteSqlBatch: (onSuccess, onError, args) ->
+        @cblist[@id] = {
+          s: onSuccess,
+          e: onError
+        }
+        @primus.write({
+          command: 'backgroundExecuteSqlBatch',
+          args: args,
+          id: @id++
+        })
+
 ## SQLite plugin object factory:
 
     dblocations = [ "docs", "libs", "nosync" ]
 
     SQLiteFactory =
+      primusConnector: null
       ###
       NOTE: this function should NOT be translated from Javascript
       back to CoffeeScript by js2coffee.
@@ -389,6 +457,9 @@ https://github.com/brodysoft/Cordova-SQLitePlugin/blob/master/SQLitePlugin.coffe
       ###
       opendb: argsArray (args) ->
         if args.length < 1 then return null
+
+        unless primusConnector
+          primusConnector = new PrimusConnector()
 
         first = args[0]
         openargs = null
@@ -409,7 +480,6 @@ https://github.com/brodysoft/Cordova-SQLitePlugin/blob/master/SQLitePlugin.coffe
             okcb = args[1]
             if args.length > 2 then errorcb = args[2]
 
-
         if openargs.location
           dblocation = dblocations[openargs.location]
         openargs.dblocation = dblocation || dblocations[0]
@@ -417,7 +487,7 @@ https://github.com/brodysoft/Cordova-SQLitePlugin/blob/master/SQLitePlugin.coffe
         if !!openargs.createFromLocation and openargs.createFromLocation == 1
           openargs.createFromResource = "1"
 
-        new SQLitePlugin openargs, okcb, errorcb
+        new SQLitePlugin openargs, okcb, errorcb, primusConnector
 
       deleteDb: (first, success, error) ->
         args = {}
@@ -437,7 +507,7 @@ https://github.com/brodysoft/Cordova-SQLitePlugin/blob/master/SQLitePlugin.coffe
           args.dblocation = dblocation || dblocations[0]
 
         delete SQLitePlugin::openDBs[args.path]
-        cordova.exec success, error, "SQLitePlugin", "delete", [ args ]
+        @primusConnector.delete success, error, [ args ]
 
 ## Exported API:
 
