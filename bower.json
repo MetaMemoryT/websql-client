@@ -1,0 +1,17 @@
+{
+  "name": "websql-client",
+  "version": "0.0.2",
+  "homepage": "https://github.com/MetaMemoryT/websql-client",
+  "authors": [
+    "Sean Usick <sean258@gmail.com>"
+  ],
+  "description": "connects to websql-server and exposes a WebSQL API",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

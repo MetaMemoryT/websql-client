@@ -1,4 +1,4 @@
-WebSQL Server
+WebSQL Client
 =============
 
 [websql-server](https://github.com/MetaMemoryT/websql-server) exposes a sqlite
