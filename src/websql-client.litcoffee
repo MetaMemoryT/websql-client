@@ -1,10 +1,4 @@
 # WebSQL Client
-Derived from:
-https://github.com/brodysoft/Cordova-SQLitePlugin/blob/master/SQLitePlugin.coffee.md
-
-#### Use coffee compiler to compile this directly into Javascript
-
-#### License for common script: MIT or Apache
 
 # Top-level SQLitePlugin objects
 

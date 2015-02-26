@@ -1,6 +1,7 @@
 * DONE gulp
 * DONE run tests in browser
 * TODO all string tests
+* TODO bower release
 * TODO split up websql-client.litcoffee into seperate *.coffee files for each class
 * TODO run tests from node only, node-qunit with websocket client??
 * TODO minification
