@@ -314,8 +314,11 @@
 
         return
 
+      errcb = (err) ->
+        throw new Error(err)
+
       @primusAdaptor.backgroundExecuteSqlBatch mycb,
-        null, [{dbargs: {dbname: @db.dbname}, executes: tropts}]
+        errcb, [{dbargs: {dbname: @db.dbname}, executes: tropts}]
 
       return
 
