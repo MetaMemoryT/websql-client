@@ -314,8 +314,9 @@
 
         return
 
-      errcb = (err) ->
-        throw new Error(err)
+      errcb = (err) =>
+        @error = (err) -> console.warn err
+        @abort(new Error(err))
 
       @primusAdaptor.backgroundExecuteSqlBatch mycb,
         errcb, [{dbargs: {dbname: @db.dbname}, executes: tropts}]
