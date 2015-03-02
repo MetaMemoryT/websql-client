@@ -1,5 +1,4 @@
-WebSQL Client
-=============
+# WebSQL Client
 
 [websql-server](https://github.com/MetaMemoryT/websql-server) exposes a sqlite
 API originally defined at
@@ -9,8 +8,7 @@ through Websockets.
 [websql-client](https://github.com/MetaMemoryT/websql-client) connects to [websql-server](https://github.com/MetaMemoryT/websql-server)
 and exposes a WebSQL API.
 
-Usage
-======
+# Usage
 
 Install:
 ```
@@ -22,7 +20,7 @@ Start the server:
 websql-server
 ```
 
-Import websql-client (a bower package) into your html
+Import websql-client (a bower package) into your html:
 ```
 TODO
 ```
@@ -32,14 +30,19 @@ Include the initialization code:
 TODO
 ```
 
-Intended Use cases
-==================
-Testing and prototyping Cordova Apps in the web browser that use
+# Testing
+## Running tests in the web browser
+serve up the whole project as a static site with: http-server (npm package)
+
+navigate to: http://localhost:8080/test/browser/tests/index.html
+
+# Intended Use cases
+- Testing and prototyping Cordova Apps in the web browser that use
 [Cordova-SQLitePlugin](https://github.com/brodysoft/Cordova-SQLitePlugin).
+- Running unit tests for code that depends on a websql api (TODO: document how
+  to set this up).
 
-Advantages over using browser's Built in WebSQL implementations:
-================================================================
-
+# Advantages over using browser's Built in WebSQL implementations:
 - No limitations of current WebSQL implementations, such as:
   - not authorized to use function: random
     - https://code.google.com/p/chromium/issues/detail?id=460191
