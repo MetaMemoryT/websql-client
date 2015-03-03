@@ -1,7 +1,7 @@
 * DONE gulp
 * DONE run tests in browser
 * DONE no null at @primusAdaptor.backgroundExecuteSqlBatch bc error at 'backgroundExecuteSqlBatchFailed'
-* TODO {name: 'foo.db'} bug -> "Uncaught TypeError: string is not a function"
+* DONE {name: 'foo.db'} bug -> "Uncaught TypeError: string is not a function"
 * TODO all string tests
 * TODO bower release
 * TODO split up websql-client.litcoffee into seperate *.coffee files for each class
