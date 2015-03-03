@@ -10,25 +10,31 @@ and exposes a WebSQL API.
 
 # Usage
 
-Install:
+Install websql-server:
 ```
 npm install -g websql-server
 ```
 
-Start the server:
+Start websql-server:
 ```
 websql-server
 ```
 
-Import websql-client (a bower package) into your html:
+Import websql-client (a bower package) and primus in your html (Primus
+is automatically served by websql-server):
 ```
-TODO
+<script src="bower_components/websql-client/dist/websql-client.js"></script>
+<script src="http://localhost:8082/primus/primus.js"></script>
 ```
 
 Include the initialization code:
 ```
-TODO
+var db = window.sqlitePlugin.openDatabase({name: "my.db", location: 1});
 ```
+
+A more advanced installation would conditionally load websql-client if a browser
+environment is detected, otherwise load
+[Cordova-SQLitePlugin](https://github.com/brodysoft/Cordova-SQLitePlugin).
 
 # Testing
 ## Running tests in the web browser
