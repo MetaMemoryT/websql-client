@@ -6,7 +6,7 @@ API originally defined at
 through Websockets.
 
 [websql-client](https://github.com/MetaMemoryT/websql-client) connects to [websql-server](https://github.com/MetaMemoryT/websql-server)
-and exposes a WebSQL API.
+and implements the [WebSQL API](http://www.w3.org/TR/webdatabase/).
 
 # Usage
 
