@@ -7,6 +7,9 @@
   ],
   "description": "connects to websql-server and exposes a WebSQL API",
   "license": "MIT",
+  "main": [
+    "./dist/websql-client.js"
+  ],
   "ignore": [
     "**/.*",
     "node_modules",
