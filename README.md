@@ -1,4 +1,6 @@
 # WebSQL Client
+[![Bower version](https://badge.fury.io/bo/websql-client.svg)](http://badge.fury.io/bo/websql-client)
+
 [![NPM](https://nodei.co/npm/websql-client.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/websql-client/)
 
 [websql-server](https://github.com/MetaMemoryT/websql-server) exposes a sqlite
